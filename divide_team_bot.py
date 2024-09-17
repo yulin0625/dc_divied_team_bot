@@ -1,7 +1,22 @@
+import os
+from dotenv import load_dotenv
 import discord
 from discord import app_commands
 from discord.ext import commands
 import random
+
+
+# 載入 .env 文件
+print("正在載入 .env 文件...")
+load_dotenv()
+print(".env 文件載入完成")
+
+# 檢查環境變量
+bot_token = os.getenv("DISCORD_BOT_TOKEN")
+admin_id = os.getenv("ADMIN_ID")
+
+print(f"Bot Token: {'已設置' if bot_token else '未設置'}")
+print(f"Admin ID: {'已設置' if admin_id else '未設置'}")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -97,8 +112,8 @@ async def help_command(interaction: discord.Interaction):
     help_embed.add_field(name="/kick @用戶", value="將指定玩家踢出隊列", inline=False)
     help_embed.add_field(name="/help", value="顯示此使用說明", inline=False)
 
-    # 替換 YOUR_DISCORD_USER_ID 為您的實際 Discord 用戶 ID
-    admin_id = "620961564824043530"
+    # 從環境變量中獲取管理員 ID
+    admin_id = os.getenv("ADMIN_ID")
     help_embed.set_footer(
         text=f"如有任何問題，請聯繫伺服器管理員。點擊這裡聯繫管理員",
         icon_url=interaction.guild.icon.url if interaction.guild.icon else discord.Embed.Empty,
@@ -120,5 +135,8 @@ async def on_app_command_error(interaction: discord.Interaction, error: app_comm
         await interaction.response.send_message(f"發生錯誤：{str(error)}", ephemeral=True)
 
 
-# 在這裡替換為您的機器人令牌
-bot.run("YOUR_BOT_TOKEN")
+if bot_token:
+    print("正在啟動機器人...")
+    bot.run(bot_token)
+else:
+    print("錯誤：無法獲取機器人令牌。請檢查您的 .env 文件。")
