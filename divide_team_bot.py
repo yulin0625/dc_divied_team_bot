@@ -37,12 +37,13 @@ async def start_game(interaction: discord.Interaction):
     await send_response_with_buttons(interaction, "歡迎使用分隊機器人！請選擇以下操作：")
 
 
-def get_player_list_message():
+def get_player_list_and_count_message():
+    player_count = len(bot.players)
     if not bot.players:
-        return "目前沒有玩家在遊戲隊列中。"
+        return f"目前沒有玩家在遊戲隊列中。\n\n當前隊伍人數：0"
     else:
         player_names = ", ".join([player.name for player in bot.players])
-        return f"當前在隊列中的玩家: {player_names}"
+        return f"當前在隊列中的玩家: {player_names}\n\n當前隊伍人數：{player_count}"
 
 
 async def send_response_with_buttons(interaction: discord.Interaction, content=None):
@@ -53,8 +54,8 @@ async def send_response_with_buttons(interaction: discord.Interaction, content=N
     view.add_item(discord.ui.Button(label="清空隊列", style=discord.ButtonStyle.danger, custom_id="clear"))
     view.add_item(discord.ui.Button(label="幫助", style=discord.ButtonStyle.secondary, custom_id="help"))
 
-    player_list = get_player_list_message()
-    full_content = f"{content}\n\n{player_list}" if content else player_list
+    player_info = get_player_list_and_count_message()
+    full_content = f"{content}\n\n{player_info}" if content else player_info
     await interaction.response.send_message(content=full_content, view=view)
 
 
@@ -66,8 +67,8 @@ async def update_message_with_buttons(interaction: discord.Interaction, content=
     view.add_item(discord.ui.Button(label="清空隊列", style=discord.ButtonStyle.danger, custom_id="clear"))
     view.add_item(discord.ui.Button(label="幫助", style=discord.ButtonStyle.secondary, custom_id="help"))
 
-    player_list = get_player_list_message()
-    full_content = f"{content}\n\n{player_list}" if content else player_list
+    player_info = get_player_list_and_count_message()
+    full_content = f"{content}\n\n{player_info}" if content else player_info
     await interaction.response.edit_message(content=full_content, view=view)
 
 
@@ -97,7 +98,8 @@ async def handle_button_interaction(interaction: discord.Interaction):
         team1_names = ", ".join([player.name for player in team1])
         team2_names = ", ".join([player.name for player in team2])
 
-        await update_message_with_buttons(interaction, f"隊伍1: {team1_names}\n隊伍2: {team2_names}")
+        result = f"隊伍1 ({len(team1)}人): {team1_names}\n隊伍2 ({len(team2)}人): {team2_names}"
+        await update_message_with_buttons(interaction, result)
     elif custom_id == "clear":
         player_count = len(bot.players)
         bot.players.clear()
