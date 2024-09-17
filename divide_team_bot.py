@@ -30,22 +30,22 @@ async def on_ready():
 @bot.tree.command(name="join", description="加入遊戲隊列")
 async def join(interaction: discord.Interaction):
     bot.players.add(interaction.user)
-    await interaction.response.send_message(f"{interaction.user.name} 已加入遊戲隊列!", ephemeral=True)
+    await interaction.response.send_message(f"{interaction.user.name} 已加入遊戲隊列!")
 
 
 @bot.tree.command(name="leave", description="離開遊戲隊列")
 async def leave(interaction: discord.Interaction):
     if interaction.user in bot.players:
         bot.players.remove(interaction.user)
-        await interaction.response.send_message(f"{interaction.user.name} 已離開遊戲隊列!", ephemeral=True)
+        await interaction.response.send_message(f"{interaction.user.name} 已離開遊戲隊列!")
     else:
-        await interaction.response.send_message(f"{interaction.user.name} 不在遊戲隊列中!", ephemeral=True)
+        await interaction.response.send_message(f"{interaction.user.name} 不在遊戲隊列中!")
 
 
 @bot.tree.command(name="divide", description="將玩家隨機分為兩隊")
 async def divide_teams(interaction: discord.Interaction):
     if len(bot.players) < 2:
-        await interaction.response.send_message("至少需要2名玩家才能分隊!", ephemeral=True)
+        await interaction.response.send_message("至少需要2名玩家才能分隊!")
         return
 
     player_list = list(bot.players)
@@ -64,10 +64,10 @@ async def divide_teams(interaction: discord.Interaction):
 @bot.tree.command(name="list", description="列出當前在隊列中的所有玩家")
 async def list_players(interaction: discord.Interaction):
     if not bot.players:
-        await interaction.response.send_message("目前沒有玩家在遊戲隊列中!", ephemeral=True)
+        await interaction.response.send_message("目前沒有玩家在遊戲隊列中!")
     else:
         player_names = ", ".join([player.name for player in bot.players])
-        await interaction.response.send_message(f"當前在隊列中的玩家: {player_names}", ephemeral=True)
+        await interaction.response.send_message(f"當前在隊列中的玩家: {player_names}")
 
 
 @bot.tree.command(name="clear", description="清除所有在隊列中的玩家")
@@ -83,7 +83,7 @@ async def kick_player(interaction: discord.Interaction, member: discord.Member):
         bot.players.remove(member)
         await interaction.response.send_message(f"{member.name} 已被踢出遊戲隊列。")
     else:
-        await interaction.response.send_message(f"{member.name} 不在遊戲隊列中。", ephemeral=True)
+        await interaction.response.send_message(f"{member.name} 不在遊戲隊列中。")
 
 
 @bot.tree.command(name="help", description="顯示機器人的使用說明")
