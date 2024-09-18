@@ -120,6 +120,10 @@ async def handle_button_interaction(interaction: discord.Interaction):
 async def send_help_message(interaction: discord.Interaction):
     help_content = """
 小馬哥分隊機器人 使用說明:
+
+/start: 開始分隊
+/kick @memberID: 將指定玩家踢出隊列
+
 • 加入隊列：將你加入到遊戲隊列中
 • 離開隊列：將你從遊戲隊列中移除
 • 分隊：將當前隊列中的玩家隨機分為兩隊
