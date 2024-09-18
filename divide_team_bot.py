@@ -29,12 +29,21 @@ bot = TeamDividerBot()
 @bot.event
 async def on_ready():
     print(f"{bot.user} 已連接到 Discord!")
-    await bot.change_presence(activity=discord.Game(name="分隊遊戲"))
+    await bot.change_presence(activity=discord.Game(name="小馬哥分隊遊戲"))
 
 
-@bot.tree.command(name="start", description="開始分隊遊戲")
+@bot.tree.command(name="start", description="開始分隊")
 async def start_game(interaction: discord.Interaction):
-    await send_response_with_buttons(interaction, "歡迎使用分隊機器人！請選擇以下操作：")
+    await send_response_with_buttons(interaction, "歡迎使用小馬哥分隊機器人！請選擇以下操作：")
+
+
+@bot.tree.command(name="kick", description="將指定玩家踢出隊列")
+async def kick_player(interaction: discord.Interaction, member: discord.Member):
+    if member in bot.players:
+        bot.players.remove(member)
+        await send_response_with_buttons(interaction, f"{member.name} 已被踢出遊戲隊列。")
+    else:
+        await interaction.response.send_message(f"{member.name} 不在遊戲隊列中。", ephemeral=True)
 
 
 def get_player_list_and_count_message():
@@ -110,14 +119,12 @@ async def handle_button_interaction(interaction: discord.Interaction):
 
 async def send_help_message(interaction: discord.Interaction):
     help_content = """
-Team Divider Bot 使用說明:
+小馬哥分隊機器人 使用說明:
 • 加入隊列：將你加入到遊戲隊列中
 • 離開隊列：將你從遊戲隊列中移除
 • 分隊：將當前隊列中的玩家隨機分為兩隊
 • 清空隊列：清除所有在隊列中的玩家
 • 幫助：顯示此使用說明
-
-如有任何問題，請聯繫伺服器管理員。
     """
     admin_id = os.getenv("ADMIN_ID")
     help_content += f"\n如需幫助，請聯繫管理員：<@{admin_id}>"
