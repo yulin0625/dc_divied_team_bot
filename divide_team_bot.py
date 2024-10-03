@@ -51,7 +51,7 @@ def get_player_list_and_count_message():
     if not bot.players:
         return f"目前沒有玩家在遊戲隊列中。\n\n當前隊伍人數：0"
     else:
-        player_names = ", ".join([player.name for player in bot.players])
+        player_names = ", ".join([player.display_name for player in bot.players])
         return f"當前在隊列中的玩家: {player_names}\n\n當前隊伍人數：{player_count}"
 
 
@@ -85,13 +85,13 @@ async def handle_button_interaction(interaction: discord.Interaction):
     custom_id = interaction.data["custom_id"]
     if custom_id == "join":
         bot.players.add(interaction.user)
-        await update_message_with_buttons(interaction, f"{interaction.user.name} 已加入遊戲隊列!")
+        await update_message_with_buttons(interaction, f"{interaction.user.display_name} 已加入遊戲隊列!")
     elif custom_id == "leave":
         if interaction.user in bot.players:
             bot.players.remove(interaction.user)
-            await update_message_with_buttons(interaction, f"{interaction.user.name} 已離開遊戲隊列!")
+            await update_message_with_buttons(interaction, f"{interaction.user.display_name} 已離開遊戲隊列!")
         else:
-            await update_message_with_buttons(interaction, f"{interaction.user.name} 不在遊戲隊列中!")
+            await update_message_with_buttons(interaction, f"{interaction.user.display_name} 不在遊戲隊列中!")
     elif custom_id == "divide":
         if len(bot.players) < 2:
             await update_message_with_buttons(interaction, "至少需要2名玩家才能分隊!")
@@ -104,8 +104,8 @@ async def handle_button_interaction(interaction: discord.Interaction):
         team1 = player_list[:mid]
         team2 = player_list[mid:]
 
-        team1_names = ", ".join([player.name for player in team1])
-        team2_names = ", ".join([player.name for player in team2])
+        team1_names = ", ".join([player.display_name for player in team1])
+        team2_names = ", ".join([player.display_name for player in team2])
 
         result = f"隊伍1 ({len(team1)}人): {team1_names}\n隊伍2 ({len(team2)}人): {team2_names}"
         await update_message_with_buttons(interaction, result)
